@@ -1,0 +1,60 @@
+<!DOCTYPE html><html>
+<meta name="viewport" content="width=device-width">
+<head><title>RazorPay Web Payment</title></head>
+<body>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+   function GetURLParameter(sParam)
+   {
+      var sPageURL = window.location.search.substring(1);
+      var sURLVariables = sPageURL.split('&');
+      for (var i = 0; i < sURLVariables.length; i++) 
+      {
+         var sParameterName = sURLVariables[i].split('=');
+         if (sParameterName[0] == sParam) 
+         {
+               return sParameterName[1];
+         }
+      }
+   }​
+   var amount = GetURLParameter('amt');
+       var options = {
+         "key": "rzp_test_62wBmqWXtrZhOd",
+          "amount": amount, "currency": "INR",
+          "name": "Genisys",
+          "description": "Test Transaction",
+          "image": "https://example.com/your_logo",
+          "handler": function (response){
+             window.parent.postMessage("SUCCESS","*");      //2 
+             window.parent.postMessage(response.razorpay_payment_id,"*"); 
+             alert(response.razorpay_payment_id);
+             alert(response.razorpay_order_id);
+             alert(response.razorpay_signature)    
+          },    
+          "prefill": {        
+             "name": "Shailesh Kadam",        
+             "email": "shailesh.kadam@example.com",
+             "contact": "9999999999"   
+           },   
+           "notes": {        
+             "address": "Autofy"    
+          },    
+          "theme": {
+             "color": "#DF0145"    
+          },
+          "modal": {
+            "ondismiss": function(){
+               window.parent.postMessage("MODAL_CLOSED","*");   //3
+            }
+          }
+       };
+
+       var rzp1 = new Razorpay(options);
+       window.onload = function(e){  //1  
+          rzp1.open();
+          e.preventDefault();
+       }
+      
+     </script>
+</body>
+</html>
